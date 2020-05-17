@@ -3,6 +3,7 @@ package edu.stanford.qiwen.yelpsearch
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 public interface YelpService {
@@ -17,6 +18,13 @@ public interface YelpService {
         @Query("sort_by") sortBy: String,
         @Query("price") price: String?,
         @Query("open_now") openNow: Boolean,
-        @Query("attributes") attributes: String?
+        @Query("attributes") attributes: String?,
+        @Query("offset") offset: Int? = null
     ): Call<YelpSearchResult>
+
+    @GET("businesses/{id}")
+    fun queryBusinessDetails(
+        @Header("Authorization") authHeader: String,
+        @Path("id") id: String
+    ): Call<YelpBusinessDetail>
 }

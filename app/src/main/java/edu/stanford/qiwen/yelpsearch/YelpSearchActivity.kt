@@ -2,6 +2,7 @@ package edu.stanford.qiwen.yelpsearch
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +16,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_yelp_search.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,8 +34,10 @@ private const val LOCATION_NY = "New York"
 private const val LOCATION_PA = "Palo Alto"
 private const val LOCATION_CHAM = "Champaign, IL"
 private const val MY_PERMISSIONS_ACCESS_LOCATION = 1234
+private const val EXTRA_ID = "extra_id"
+private const val EXTRA_DISPLAY_DISTANCE = "extra_display_distance"
 
-class MainActivity : AppCompatActivity() {
+class YelpSearchActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var searchView: SearchView
@@ -46,17 +50,28 @@ class MainActivity : AppCompatActivity() {
     private var queryData = YelpQueryData()
     private var sortByCheckedItem = 0
 
-    private var hotChecked = false;
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
+
+    private var hotChecked = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_yelp_search)
 
         // Get current location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        adapter = RestaurantAdapter(this, restaurants)
+        adapter = RestaurantAdapter(this, restaurants, object : RestaurantAdapter.OnClickListener {
+            override fun onItemClick(restaurant: YelpRestaurant) {
+                // When user taps on view in RV, navigate to new activity
+                val intent = Intent(this@YelpSearchActivity, YelpBusinessDetailActivity::class.java)
+                intent.putExtra(EXTRA_ID, restaurant.id)
+                intent.putExtra(EXTRA_DISPLAY_DISTANCE, restaurant.displayDistance())
+                startActivity(intent)
+            }
+        })
         rvRestaurants.adapter = adapter
-        rvRestaurants.layoutManager = LinearLayoutManager(this)
+        val linearLayoutManager = LinearLayoutManager(this)
+        rvRestaurants.layoutManager = linearLayoutManager
         // add divider between items
         rvRestaurants.addItemDecoration(
             DividerItemDecoration(
@@ -66,13 +81,27 @@ class MainActivity : AppCompatActivity() {
         )
         requestPermissionAndGetLastKnownLocation()
         setOnClickListenerForTabBar()
+
+        // Endless scrolling
+        scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            override fun onLoadMore(
+                page: Int,
+                totalItemsCount: Int,
+                view: RecyclerView
+            ) {
+                Log.d(TAG, "Load more data. page $page, totalItemsCount $totalItemsCount")
+                loadMoreData(queryData, totalItemsCount)
+            }
+        }
+        // Adds the scroll listener to RecyclerView
+        rvRestaurants.addOnScrollListener(scrollListener)
     }
 
     private fun hideSoftKeyBoard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
         if (imm.isAcceptingText) { // verify if the soft keyboard is open
-            imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0);
+            imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
         }
     }
 
@@ -194,7 +223,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setOnClickListenerForTabBar() {
-        btSort.setOnClickListener{
+        btSort.setOnClickListener {
             showSortByAlertDialog()
         }
 
@@ -343,6 +372,42 @@ class MainActivity : AppCompatActivity() {
                     restaurants.clear()
                     restaurants.addAll(body.restaurants)
                     adapter.notifyDataSetChanged()
+                    scrollListener.resetState()
+                }
+
+                override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
+                    Log.i(TAG, "onFail $t")
+                }
+            }
+        )
+    }
+
+    fun loadMoreData(queryData: YelpQueryData, offset: Int) {
+        yelpService.searchRestaurants(
+            "Bearer $API_KEY",
+            queryData.term,
+            queryData.getLoc(),
+            queryData.getLat(),
+            queryData.getLon(),
+            queryData.sortBy,
+            queryData.getPrice(),
+            queryData.openNow,
+            queryData.attributes,
+            offset
+        ).enqueue(
+            object : Callback<YelpSearchResult> {
+                override fun onResponse(
+                    call: Call<YelpSearchResult>,
+                    response: Response<YelpSearchResult>
+                ) {
+                    Log.i(TAG, "onResponse $response")
+                    val body = response.body()
+                    if (body == null) {
+                        Log.w(TAG, "Did you receive valid response body from Yelp API... exiting")
+                        return
+                    }
+                    restaurants.addAll(body.restaurants)
+                    adapter.notifyDataSetChanged()
                 }
 
                 override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
@@ -354,10 +419,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSortByAlertDialog() {
         // Late initialize an alert dialog object
-        lateinit var dialog:AlertDialog
+        lateinit var dialog: AlertDialog
 
-        val builder = AlertDialog.Builder(this);
-        builder.setTitle("Sort By");
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Sort By")
         val items = arrayOf("Recommended (default)", "Distance", "Rating", "Most reviewed")
         builder.setSingleChoiceItems(items, sortByCheckedItem) { _, which ->
             when (which) {
@@ -368,7 +433,7 @@ class MainActivity : AppCompatActivity() {
             }
             sortByCheckedItem = which
             searchRestaurant(queryData)
-            dialog.dismiss();
+            dialog.dismiss()
         }
         dialog = builder.create()
         dialog.show()
