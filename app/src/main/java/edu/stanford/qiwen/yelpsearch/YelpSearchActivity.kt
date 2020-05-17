@@ -2,8 +2,11 @@ package edu.stanford.qiwen.yelpsearch
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -11,6 +14,7 @@ import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -95,6 +99,9 @@ class YelpSearchActivity : AppCompatActivity() {
         }
         // Adds the scroll listener to RecyclerView
         rvRestaurants.addOnScrollListener(scrollListener)
+        swipeContainer.setOnRefreshListener {
+            searchRestaurant(queryData)
+        }
     }
 
     private fun hideSoftKeyBoard() {
@@ -148,6 +155,30 @@ class YelpSearchActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    private fun verifyAvailableNetwork(): Boolean {
+        val connectivityManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     private fun requestPermissionAndGetLastKnownLocation() {
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -194,8 +225,6 @@ class YelpSearchActivity : AppCompatActivity() {
             MY_PERMISSIONS_ACCESS_LOCATION -> {
                 // If request is cancelled, the result arrays are empty.
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
                     getLastKnownLocation()
                 } else {
                     // permission denied, boo! Disable the
@@ -347,6 +376,10 @@ class YelpSearchActivity : AppCompatActivity() {
     }
 
     fun searchRestaurant(queryData: YelpQueryData) {
+        if (!verifyAvailableNetwork()) {
+            Toast.makeText(this, "Network is unavailable.", Toast.LENGTH_SHORT).show()
+            return
+        }
         yelpService.searchRestaurants(
             "Bearer $API_KEY",
             queryData.term,
@@ -364,6 +397,7 @@ class YelpSearchActivity : AppCompatActivity() {
                     response: Response<YelpSearchResult>
                 ) {
                     Log.i(TAG, "onResponse $response")
+                    swipeContainer.isRefreshing = false
                     val body = response.body()
                     if (body == null) {
                         Log.w(TAG, "Did you receive valid response body from Yelp API... exiting")
@@ -383,6 +417,10 @@ class YelpSearchActivity : AppCompatActivity() {
     }
 
     fun loadMoreData(queryData: YelpQueryData, offset: Int) {
+        if (!verifyAvailableNetwork()) {
+            Toast.makeText(this, "Network is unavailable.", Toast.LENGTH_SHORT).show()
+            return
+        }
         yelpService.searchRestaurants(
             "Bearer $API_KEY",
             queryData.term,

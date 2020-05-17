@@ -21,7 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-
             <Button
                 android:id="@+id/btSort"
                 style="?attr/materialButtonOutlinedStyle"
@@ -33,12 +32,13 @@
 
             <Button
                 android:id="@+id/btHot"
-                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="2dp"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
+                style="?attr/materialButtonOutlinedStyle"
                 android:text="Hot &amp; New" />
-
             <Button
                 android:id="@+id/btOpen"
                 style="?attr/materialButtonOutlinedStyle"
@@ -106,12 +106,17 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRestaurants"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
-        tools:layout_editor_absoluteX="1dp" />
+        android:layout_height="0dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRestaurants"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            tools:layout_editor_absoluteX="1dp" />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
