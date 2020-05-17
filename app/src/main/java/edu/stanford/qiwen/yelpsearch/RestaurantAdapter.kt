@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -11,7 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.item_restaurant.view.*
 
-class RestaurantAdapter(val context: Context, val restaurants: List<YelpRestaurant>) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
+class RestaurantAdapter(val context: Context, val restaurants: List<YelpRestaurant>) : PagedListAdapter<YelpRestaurant, RestaurantAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -21,14 +22,15 @@ class RestaurantAdapter(val context: Context, val restaurants: List<YelpRestaura
     override fun getItemCount() = restaurants.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val restaurant = restaurants[position]
+//        val restaurant = restaurants[position]
+        val restaurant = getItem(position) ?: return
         holder.bind(restaurant)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(restaurant : YelpRestaurant) {
             itemView.tvName.text = restaurant.name
-            itemView.ratingBar.rating = restaurant.rating.toFloat()
+            itemView.ratingBar.setImageResource(getStarRatingRes(restaurant.rating))
             itemView.tvNumReviews.text = "${restaurant.numReviews} Reviews"
             itemView.tvAddress.text = restaurant.location.address
             itemView.tvCategory.text = restaurant.categories[0].title
@@ -37,6 +39,22 @@ class RestaurantAdapter(val context: Context, val restaurants: List<YelpRestaura
             Glide.with(context).load(restaurant.imageUrl).apply(RequestOptions().transform(
                 CenterCrop(), RoundedCorners(20)
             )).into(itemView.imageView)
+        }
+
+        private fun getStarRatingRes(rating: Double) : Int {
+            return when(rating) {
+                0.0 -> R.drawable.stars_regular_0
+                1.0 -> R.drawable.stars_regular_1
+                1.5 -> R.drawable.stars_regular_1_half
+                2.0 -> R.drawable.stars_regular_2
+                2.5 -> R.drawable.stars_regular_2_half
+                3.0 -> R.drawable.stars_regular_3
+                3.5 -> R.drawable.stars_regular_3_half
+                4.0 -> R.drawable.stars_regular_4
+                4.5 -> R.drawable.stars_regular_4_half
+                5.0 -> R.drawable.stars_regular_5
+                else -> R.drawable.stars_regular_0
+            }
         }
 
     }

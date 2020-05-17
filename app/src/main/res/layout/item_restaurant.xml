@@ -8,11 +8,12 @@
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tvDistance"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Country Street" />
@@ -25,27 +26,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
-    <RatingBar
+    <ImageView
         android:id="@+id/ratingBar"
-        style="@style/Widget.AppCompat.RatingBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:numStars="5"
         android:progressTint="#F44336"
-        android:rating="4.5"
-        android:stepSize="0.5"
         app:layout_constraintStart_toStartOf="@+id/tvAddress"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        tools:srcCompat="@drawable/stars_regular_4_half" />
 
     <TextView
         android:id="@+id/tvNumReviews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
         android:textColor="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
-        app:layout_constraintStart_toEndOf="@+id/ratingBar" />
+        app:layout_constraintStart_toEndOf="@+id/ratingBar"
+        tools:text="271 Reviews" />
 
     <TextView
         android:id="@+id/tvCategory"
@@ -84,4 +83,16 @@
         app:layout_constraintEnd_toEndOf="@+id/tvDistance"
         app:layout_constraintTop_toBottomOf="@+id/tvDistance"
         tools:text="$$" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="52dp"
+        android:layout_height="21dp"
+        android:layout_gravity="right"
+        android:layout_margin="4dp"
+        android:layout_alignParentRight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/yelp_logo" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

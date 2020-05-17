@@ -6,10 +6,111 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:paddingVertical="8dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/shortcut"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btSort"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="2dp"
+                android:drawableLeft="@drawable/ic_sort_24dp"
+                android:text="Sort" />
+
+            <Button
+                android:id="@+id/btHot"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="2dp"
+                android:text="Hot &amp; New" />
+
+            <Button
+                android:id="@+id/btOpen"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="2dp"
+                android:backgroundTint="#FFFFFF"
+                android:text="Open now" />
+
+            <Button
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/btPrice1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:minHeight="0dp" android:minWidth="0dp"
+                android:text="$" />
+            <Button
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/btPrice2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minHeight="0dp" android:minWidth="0dp"
+                android:text="$$" />
+            <Button
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/btPrice3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minHeight="0dp" android:minWidth="0dp"
+                android:text="$$$" />
+            <Button
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/btPrice4"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minHeight="0dp" android:minWidth="0dp"
+                android:text="$$$$" />
+            <Button
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/btNY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="2dp"
+                android:text="New York" />
+
+            <Button
+                style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/btPA"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="2dp"
+                android:text="Palo Alto" />
+
+            <Button
+                android:id="@+id/btChamp"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="2dp"
+                android:text="Champaign" />
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRestaurants"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+        tools:layout_editor_absoluteX="1dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
