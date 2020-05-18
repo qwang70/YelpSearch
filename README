@@ -6,6 +6,12 @@
 
 Time spent: **12** hours spent in total
 
+## Instruction
+To run the project, add your API key in your local `gradle.properties` file.
+```
+API_KEY="YourSecretAPIKey"
+```
+
 ## Functionality 
 
 The following **required** functionality is completed:
@@ -23,13 +29,35 @@ The following **extensions** are implemented:
 * [X] Add a search component in the action bar
 * [X] Implement infinite scrolling by the offset
 * [X] Add a new activity that shows business details including additional information like open hours, full address, phone number, photo highlights, and a link to the yelp website.
+* [X] Avoid exposing the API key
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+### Network connection and refresh
+- If the network is not available, the app provides info in a snackbar.
+- If the network is available again, the user can swipe down to refresh the page.
+<img src='https://imgur.com/download/JgejiFU' title='Network' width='' alt='Video Walkthrough' />
 
+### Search page
+- User can search the restaurants in the search menu.
+- User can sort by "Recommended", "Distance", "Rating", and "Most reviewed".
+- Other search filters:
+  - Hot & New
+  - Open Now
+  - Price
+  - Popular location: New York, Palo Alto, Champaign IL.
+- Support for endless scrolling
+
+<img src='https://imgur.com/download/nm59Y35' title='Network' width='' alt='Video Walkthrough' />
+### Business Detail page
+- Show the restaurant image in the banner.
+- Show main business information: restaurant name, rating, number of reviews, full list of categories, price, and distance.
+- User can visit the official Yelp page for the restaurant.
+- Show additional information: Address, business hours, phone number.
+- Show up to 3 photo highlights of the restaurant.
+<img src='https://imgur.com/download/39QvqDS' title='Network' width='' alt='Video Walkthrough' />
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes

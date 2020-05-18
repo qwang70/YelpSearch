@@ -6,7 +6,10 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-public interface YelpService {
+const val BASE_URL = "https://api.yelp.com/v3/"
+const val EXTRA_ID = "extra_id"
+const val EXTRA_DISPLAY_DISTANCE = "extra_display_distance"
+interface YelpService {
 
     @GET("businesses/search")
     fun searchRestaurants(

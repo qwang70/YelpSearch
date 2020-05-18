@@ -12,7 +12,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,16 +30,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val TAG = "MainActivity"
-private const val BASE_URL = "https://api.yelp.com/v3/"
-private const val API_KEY =
-    "DNLR8dJMeMzXJiAta5m4O8YFmQVcRww1EGPxAGEuOnGS-cdhPJLaDK2Qghnd_zoPAcMo1y49AApIfNwdUz1lLNDJvGiKblWHwWIVngni2ZS-53rGkw27lsgzxyO_XnYx"
 private const val LOCATION_NY = "New York"
 private const val LOCATION_PA = "Palo Alto"
 private const val LOCATION_CHAM = "Champaign, IL"
 private const val MY_PERMISSIONS_ACCESS_LOCATION = 1234
-private const val EXTRA_ID = "extra_id"
-private const val EXTRA_DISPLAY_DISTANCE = "extra_display_distance"
-
 class YelpSearchActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -56,7 +49,6 @@ class YelpSearchActivity : AppCompatActivity() {
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
-    private var hotChecked = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_yelp_search)
@@ -64,6 +56,7 @@ class YelpSearchActivity : AppCompatActivity() {
         // Get current location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        // Set Restaurant search result adapter
         adapter = RestaurantAdapter(this, restaurants, object : RestaurantAdapter.OnClickListener {
             override fun onItemClick(restaurant: YelpRestaurant) {
                 // When user taps on view in RV, navigate to new activity
@@ -83,6 +76,7 @@ class YelpSearchActivity : AppCompatActivity() {
                 LinearLayoutManager.VERTICAL
             )
         )
+
         requestPermissionAndGetLastKnownLocation()
         setOnClickListenerForTabBar()
 
@@ -104,6 +98,7 @@ class YelpSearchActivity : AppCompatActivity() {
         }
     }
 
+    /** Hide the soft keyboard after the user click back button from the search bar */
     private fun hideSoftKeyBoard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -138,8 +133,7 @@ class YelpSearchActivity : AppCompatActivity() {
             }
         })
 
-        // When the user clicks the back button on the search bar, clear the search query in order
-        // to show all the maps.
+        // Hide the soft keyboard on menu item action collapse
         searchMenuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
                 return true
@@ -155,6 +149,9 @@ class YelpSearchActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    /** Verify the network connection.
+     * Return true if connected.
+     */
     private fun verifyAvailableNetwork(): Boolean {
         val connectivityManager =
             this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -179,6 +176,8 @@ class YelpSearchActivity : AppCompatActivity() {
         return false
     }
 
+    /** Request permission for the location access and set the last known location in YelpQueryData
+     */
     private fun requestPermissionAndGetLastKnownLocation() {
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -239,6 +238,7 @@ class YelpSearchActivity : AppCompatActivity() {
         }
     }
 
+    /** Get the last known location and set it in the queryData. */
     private fun getLastKnownLocation() {
         Log.i(TAG, "getLastKnownLocation")
         fusedLocationClient.lastLocation
@@ -257,12 +257,10 @@ class YelpSearchActivity : AppCompatActivity() {
         }
 
         btHot.setOnClickListener {
-            hotChecked = !hotChecked
-            if (hotChecked) {
-                setButtonPress(btHot)
+            btHot.isSelected = !btHot.isSelected
+            if (btHot.isSelected) {
                 queryData.attributes = "hot_and_new"
             } else {
-                setButtonUnpress(btHot)
                 queryData.attributes = null
             }
 
@@ -270,118 +268,83 @@ class YelpSearchActivity : AppCompatActivity() {
         }
 
         btOpen.setOnClickListener {
+            btOpen.isSelected = !btOpen.isSelected
             queryData.openNow = !queryData.openNow
-            if (queryData.openNow) {
-                setButtonPress(btOpen)
-            } else {
-                setButtonUnpress(btOpen)
-            }
             searchRestaurant(queryData)
         }
 
         // Price
         btPrice1.setOnClickListener {
+            btPrice1.isSelected = !btPrice1.isSelected
             queryData.price1 = !queryData.price1
-            if (queryData.price1) {
-                setButtonPress(btPrice1)
-            } else {
-                setButtonUnpress(btPrice1)
-            }
             searchRestaurant(queryData)
         }
 
         btPrice2.setOnClickListener {
+            btPrice2.isSelected = !btPrice2.isSelected
             queryData.price2 = !queryData.price2
-            if (queryData.price2) {
-                setButtonPress(btPrice2)
-            } else {
-                setButtonUnpress(btPrice2)
-            }
             searchRestaurant(queryData)
         }
 
         btPrice3.setOnClickListener {
+            btPrice3.isSelected = !btPrice3.isSelected
             queryData.price3 = !queryData.price3
-            if (queryData.price3) {
-                setButtonPress(btPrice3)
-            } else {
-                setButtonUnpress(btPrice3)
-            }
             searchRestaurant(queryData)
         }
 
         btPrice4.setOnClickListener {
+            btPrice4.isSelected = !btPrice4.isSelected
             queryData.price4 = !queryData.price4
-            if (queryData.price4) {
-                setButtonPress(btPrice4)
-            } else {
-                setButtonUnpress(btPrice4)
-            }
             searchRestaurant(queryData)
         }
 
 
         btNY.setOnClickListener {
-            if (!queryData.location.equals(LOCATION_NY)) {
-                setButtonPress(btNY)
-                setButtonUnpress(btPA)
-                setButtonUnpress(btChamp)
+            btNY.isSelected = !btNY.isSelected
+            if (btNY.isSelected) {
+                btPA.isSelected = false
+                btChamp.isSelected = false
                 queryData.location = LOCATION_NY
             } else {
-                setButtonUnpress(btNY)
                 queryData.location = null
             }
             searchRestaurant(queryData)
         }
         btPA.setOnClickListener {
-            if (!queryData.location.equals(LOCATION_PA)) {
-                setButtonUnpress(btNY)
-                setButtonPress(btPA)
-                setButtonUnpress(btChamp)
+            btPA.isSelected = !btPA.isSelected
+            if (btPA.isSelected) {
+                btNY.isSelected = false
+                btChamp.isSelected = false
                 queryData.location = LOCATION_PA
             } else {
-                setButtonUnpress(btPA)
                 queryData.location = null
             }
             searchRestaurant(queryData)
         }
         btChamp.setOnClickListener {
-            if (!queryData.location.equals(LOCATION_CHAM)) {
-                setButtonUnpress(btNY)
-                setButtonUnpress(btPA)
-                setButtonPress(btChamp)
+            btChamp.isSelected = !btChamp.isSelected
+            if (btChamp.isSelected) {
+                btNY.isSelected = false
+                btPA.isSelected = false
                 queryData.location = LOCATION_CHAM
             } else {
-                setButtonUnpress(btChamp)
                 queryData.location = null
             }
             searchRestaurant(queryData)
         }
     }
 
-    private fun setButtonPress(bt: Button) {
-        bt.backgroundTintList = ContextCompat.getColorStateList(this, R.color.colorPrimary)
-        bt.setTextColor(
-            ContextCompat.getColorStateList(
-                this,
-                R.color.design_default_color_background
-            )
-        )
-    }
-
-    private fun setButtonUnpress(bt: Button) {
-        bt.backgroundTintList =
-            ContextCompat.getColorStateList(this, R.color.design_default_color_background)
-        bt.setTextColor(ContextCompat.getColorStateList(this, R.color.colorPrimary))
-    }
-
+    /** Search the restaurant on Yelp using Retrofit service and the query
+     * parameters in YelpQueryData.
+     */
     fun searchRestaurant(queryData: YelpQueryData) {
+        // Verify the network connection.
         if (!verifyAvailableNetwork()) {
             Toast.makeText(this, "Network is unavailable.", Toast.LENGTH_SHORT).show()
             return
         }
         yelpService.searchRestaurants(
-            "Bearer $API_KEY",
+            "Bearer ${BuildConfig.API_KEY}",
             queryData.term,
             queryData.getLoc(),
             queryData.getLat(),
@@ -403,6 +366,7 @@ class YelpSearchActivity : AppCompatActivity() {
                         Log.w(TAG, "Did you receive valid response body from Yelp API... exiting")
                         return
                     }
+                    // Clear the existing results
                     restaurants.clear()
                     restaurants.addAll(body.restaurants)
                     adapter.notifyDataSetChanged()
@@ -416,13 +380,16 @@ class YelpSearchActivity : AppCompatActivity() {
         )
     }
 
+    /** Load more pages from Yelp API. Do not clear the existing items in the list.
+     */
     fun loadMoreData(queryData: YelpQueryData, offset: Int) {
+        // Verify the network connection.
         if (!verifyAvailableNetwork()) {
             Toast.makeText(this, "Network is unavailable.", Toast.LENGTH_SHORT).show()
             return
         }
         yelpService.searchRestaurants(
-            "Bearer $API_KEY",
+            "Bearer ${BuildConfig.API_KEY}",
             queryData.term,
             queryData.getLoc(),
             queryData.getLat(),
@@ -455,6 +422,9 @@ class YelpSearchActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * Show the AlertDialog for the sort by button.
+     */
     private fun showSortByAlertDialog() {
         // Late initialize an alert dialog object
         lateinit var dialog: AlertDialog

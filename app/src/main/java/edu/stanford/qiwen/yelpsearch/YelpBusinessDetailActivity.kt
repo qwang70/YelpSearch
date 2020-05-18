@@ -26,14 +26,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val EXTRA_DISPLAY_DISTANCE = "extra_display_distance"
-
 private const val TAG = "YelpBusinessDetailActivity"
-private const val BASE_URL = "https://api.yelp.com/v3/"
-private const val API_KEY =
-    "DNLR8dJMeMzXJiAta5m4O8YFmQVcRww1EGPxAGEuOnGS-cdhPJLaDK2Qghnd_zoPAcMo1y49AApIfNwdUz1lLNDJvGiKblWHwWIVngni2ZS-53rGkw27lsgzxyO_XnYx"
-private const val EXTRA_ID = "extra_id"
-
 class YelpBusinessDetailActivity : AppCompatActivity() {
     private val retrofit =
         Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
@@ -53,7 +46,7 @@ class YelpBusinessDetailActivity : AppCompatActivity() {
             return
         }
         yelpService.queryBusinessDetails(
-            "Bearer $API_KEY",
+            "Bearer ${BuildConfig.API_KEY}",
             intent.getStringExtra(EXTRA_ID)!!
         ).enqueue(
             object : Callback<YelpBusinessDetail> {
@@ -89,14 +82,24 @@ class YelpBusinessDetailActivity : AppCompatActivity() {
 
         // Load additional business info
         tvAddress.text = businessDetails.location.displayAddress.joinToString(", ")
-        val isOpenNowStr = if (businessDetails.hours[0].isOpenNow) "Open now" else "Closed now"
-        val openStart = "${businessDetails.hours[0].open[0].start.subSequence(
-            0, 2
-        )}:${businessDetails.hours[0].open[0].start.subSequence(2, 4)}"
-        val openEnd = "${businessDetails.hours[0].open[0].end.subSequence(
-            0, 2
-        )}:${businessDetails.hours[0].open[0].end.subSequence(2, 4)}"
-        tvOpenTime.text = "$isOpenNowStr.\tHours: $openStart - $openEnd"
+        if (!businessDetails.hours.isNullOrEmpty()) {
+            val isOpenNowStr = if (businessDetails.hours[0].isOpenNow) "Open now" else "Closed now"
+            var openStart: String? = null
+            var openEnd: String? = null
+            if (!businessDetails.hours[0].open.isNullOrEmpty()) {
+                openStart = "${businessDetails.hours[0].open[0].start.subSequence(
+                    0, 2
+                )}:${businessDetails.hours[0].open[0].start.subSequence(2, 4)}"
+                openEnd = "${businessDetails.hours[0].open[0].end.subSequence(
+                    0, 2
+                )}:${businessDetails.hours[0].open[0].end.subSequence(2, 4)}"
+            }
+            val hoursText = if (openStart != null) "Hours: $openStart - $openEnd" else ""
+            tvOpenTime.text = "$isOpenNowStr.\t$hoursText"
+        } else {
+            tvOpenTime.text = "Open time unavailable."
+        }
+
         tvPhone.text = businessDetails.phone
         // Load banner images
         Glide.with(this).load(businessDetails.imageUrl).apply(
@@ -110,6 +113,7 @@ class YelpBusinessDetailActivity : AppCompatActivity() {
                 target: Target<Drawable>?,
                 isFirstResource: Boolean
             ): Boolean {
+                progress_bar_holder.visibility = View.GONE
                 return false
             }
 

@@ -45,7 +45,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="2dp"
-                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
                 android:text="Open now" />
 
             <Button
@@ -54,6 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="2dp"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
                 android:minHeight="0dp" android:minWidth="0dp"
                 android:text="$" />
             <Button
@@ -61,6 +64,8 @@
                 android:id="@+id/btPrice2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
                 android:minHeight="0dp" android:minWidth="0dp"
                 android:text="$$" />
             <Button
@@ -68,6 +73,8 @@
                 android:id="@+id/btPrice3"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
                 android:minHeight="0dp" android:minWidth="0dp"
                 android:text="$$$" />
             <Button
@@ -76,6 +83,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="2dp"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
                 android:minHeight="0dp" android:minWidth="0dp"
                 android:text="$$$$" />
             <Button
@@ -84,6 +93,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="2dp"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
                 android:text="New York" />
 
             <Button
@@ -92,6 +103,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="2dp"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
                 android:text="Palo Alto" />
 
             <Button
@@ -100,6 +113,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="2dp"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/button_background_tint"
                 android:text="Champaign" />
 
 
