@@ -35,12 +35,8 @@ The following **extensions** are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-### Network connection and refresh
-- If the network is not available, the app provides info in a snackbar.
-- If the network is available again, the user can swipe down to refresh the page.
-<img src='https://imgur.com/download/JgejiFU' title='Network' width='' alt='Video Walkthrough' />
-
 ### Search page
+- Use the current location for searching.
 - User can search the restaurants in the search menu.
 - User can sort by "Recommended", "Distance", "Rating", and "Most reviewed".
 - Other search filters:
@@ -50,6 +46,11 @@ Here's a walkthrough of implemented user stories:
   - Popular location: New York, Palo Alto, Champaign IL.
 - Support for endless scrolling
 
+<img src='https://imgur.com/download/JgejiFU' title='Network' width='' alt='Video Walkthrough' />
+
+### Network connection and refresh
+- If the network is not available, the app provides info in a snackbar.
+- If the network is available again, the user can swipe down to refresh the page.
 <img src='https://imgur.com/download/nm59Y35' title='Network' width='' alt='Video Walkthrough' />
 
 ### Business Detail page
