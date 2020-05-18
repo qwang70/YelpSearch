@@ -51,7 +51,9 @@ Here's a walkthrough of implemented user stories:
 - Support for endless scrolling
 
 <img src='https://imgur.com/download/nm59Y35' title='Network' width='' alt='Video Walkthrough' />
+
 ### Business Detail page
+
 - Show the restaurant image in the banner.
 - Show main business information: restaurant name, rating, number of reviews, full list of categories, price, and distance.
 - User can visit the official Yelp page for the restaurant.
@@ -62,7 +64,11 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+- Support optional query parameters.
+- Use material design for buttons.
+- Use a selector for the button pressed and unpressed states.
+- There are two ways to implement endless scrolling. The official way is to use a paging view. But it will take too many changes to make it work.
+- Several functions in the provided network checking method is deprecated.
 
 ## License
 
