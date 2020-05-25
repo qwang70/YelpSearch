@@ -40,6 +40,7 @@ class YelpBusinessDetailActivity : AppCompatActivity() {
         queryDetails()
     }
 
+    /** Initiate query to get business detail by the business ID. */
     private fun queryDetails() {
         if (intent.getStringExtra(EXTRA_ID) == null) {
             Toast.makeText(this, "Can't get ID of the business", Toast.LENGTH_SHORT).show()
@@ -144,6 +145,7 @@ class YelpBusinessDetailActivity : AppCompatActivity() {
         }
     }
 
+    /** Load the highlight image using Glide. */
     private fun loadHighlightImageInto(url: String, iv: ImageView) {
         Glide.with(this).load(url).apply(
             RequestOptions().transform(

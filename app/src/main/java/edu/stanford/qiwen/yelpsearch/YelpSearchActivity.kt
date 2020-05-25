@@ -273,7 +273,7 @@ class YelpSearchActivity : AppCompatActivity() {
             searchRestaurant(queryData)
         }
 
-        // Price
+        // Set listener to price buttons. Multiple buttons can be pressed together.
         btPrice1.setOnClickListener {
             btPrice1.isSelected = !btPrice1.isSelected
             queryData.price1 = !queryData.price1
@@ -299,6 +299,7 @@ class YelpSearchActivity : AppCompatActivity() {
         }
 
 
+        // Set listener to location buttons
         btNY.setOnClickListener {
             btNY.isSelected = !btNY.isSelected
             if (btNY.isSelected) {

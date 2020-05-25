@@ -49,6 +49,7 @@ class RestaurantAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         @SuppressLint("SetTextI18n")
         fun bind(restaurant: YelpRestaurant) {
+            // Render the itemView
             itemView.tvName.text = restaurant.name
             itemView.ratingBar.setImageResource(restaurant.getStarRatingRes())
             itemView.tvNumReviews.text = "${restaurant.numReviews} Reviews"
