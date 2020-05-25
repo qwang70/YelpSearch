@@ -35,12 +35,8 @@ The following **extensions** are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-### Network connection and refresh
-- If the network is not available, the app provides info in a snackbar.
-- If the network is available again, the user can swipe down to refresh the page.
-<img src='https://imgur.com/download/JgejiFU' title='Network' width='' alt='Video Walkthrough' />
-
 ### Search page
+- Use the current location for searching.
 - User can search the restaurants in the search menu.
 - User can sort by "Recommended", "Distance", "Rating", and "Most reviewed".
 - Other search filters:
@@ -50,8 +46,15 @@ Here's a walkthrough of implemented user stories:
   - Popular location: New York, Palo Alto, Champaign IL.
 - Support for endless scrolling
 
+<img src='https://imgur.com/download/JgejiFU' title='Network' width='' alt='Video Walkthrough' />
+
+### Network connection and refresh
+- If the network is not available, the app provides info in a snackbar.
+- If the network is available again, the user can swipe down to refresh the page.
 <img src='https://imgur.com/download/nm59Y35' title='Network' width='' alt='Video Walkthrough' />
+
 ### Business Detail page
+
 - Show the restaurant image in the banner.
 - Show main business information: restaurant name, rating, number of reviews, full list of categories, price, and distance.
 - User can visit the official Yelp page for the restaurant.
@@ -62,7 +65,11 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+- Support optional query parameters.
+- Use material design for buttons.
+- Use a selector for the button pressed and unpressed states.
+- There are two ways to implement endless scrolling. The official way is to use a paging view. But it will take too many changes to make it work.
+- Several functions in the provided network checking method is deprecated.
 
 ## License
 
